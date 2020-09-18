@@ -59,11 +59,11 @@ class CPU:
             self.reg[reg_a] /= self.reg[reg_b]
         elif op == "CMP":
             if self.reg[reg_a] < self.reg[reg_b]:
-                self.flag = 0b00000100
+                self.flag = 0b00000100 #4
             if self.reg[reg_a] > self.reg[reg_b]:
-                self.flag = 0b00000010
+                self.flag = 0b00000010 #2
             if self.reg[reg_a] == self.reg[reg_b]:
-                self.flag = 0b00000001
+                self.flag = 0b00000001 #1
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -89,15 +89,15 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        HLT = 0b00000001
-        LDI = 0b10000010
-        PRN = 0b01000111
+        HLT = 0b00000001#1
+        LDI = 0b10000010#130
+        PRN = 0b01000111#71
         
         SP = 7
-        CMP = 0b10100111
-        JMP = 0b01010100
-        JEQ = 0b01010101
-        JNE = 0b01010110
+        CMP = 0b10100111#167
+        JMP = 0b01010100#84
+        JEQ = 0b01010101#85
+        JNE = 0b01010110#86
 
         running = True
 
@@ -129,13 +129,17 @@ class CPU:
                 self.PC = self.reg[reg_num]
 
             elif instruction == JEQ:#Jump, but only if equal
+                if self.flag == 0b00000001:
                     reg_num = self.ram_read(self.PC+1)
                     self.PC = self.reg[reg_num]
+                else:
                     self.PC += 2  
 
             elif instruction == JNE:#Jump, but only if not equal
+                if self.flag != 0b00000001:
                     reg_num = self.ram_read(self.PC+1)
                     self.PC = self.reg[reg_num]
+                else:
                     self.PC += 2
             else:
                 print(f" input {instruction}")
